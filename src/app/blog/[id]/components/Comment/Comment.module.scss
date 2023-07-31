@@ -1,0 +1,14 @@
+.avatar {
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.comment_replay__button {
+  padding: 5px;
+  cursor: pointer;
+  background-color: #53c28b;
+  border: none;
+  border-radius: 5px;
+  width: max-content;
+  color: white;
+}

@@ -1,0 +1,94 @@
+.container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title {
+  color: #bbb;
+}
+
+.subtitle {
+  font-size: 20px;
+  margin-bottom: 30px;
+  color: #bbb;
+}
+
+.form {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.input {
+  padding: 20px;
+  background-color: transparent;
+  border: 2px solid #bbb;
+  border-radius: 5px;
+  outline: none;
+  color: #bbb;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.button {
+  width: 300px;
+  padding: 20px;
+  cursor: pointer;
+  background-color: #53c28b;
+  border: none;
+  border-radius: 5px;
+  color: #eee;
+  font-weight: bold;
+}
+
+.button:hover {
+  background-color: #49b07d;
+}
+
+.or {
+  color: #bbb;
+}
+
+.link {
+  text-decoration: underline;
+  color: #7d7c7c;
+}
+
+.link:hover {
+  color: rgb(61, 61, 61);
+}
+
+.google {
+  background-color: rgba(228, 97, 50, 0.72);
+}
+
+.google:hover {
+  background-color: rgba(228, 97, 50, 0.803);
+}
+
+.github {
+  background-color: rgba(35, 145, 34, 0.72);
+}
+
+.github:hover {
+  background-color: rgba(111, 223, 120, 0.803);
+}
+
+.facebook {
+  background-color: rgba(34, 53, 157, 0.72);
+}
+
+.facebook:hover {
+  background-color: rgba(62, 109, 167, 0.803);
+}
+
+.apple {
+  background-color: rgba(158, 161, 180, 0.72);
+}
+
+.apple:hover {
+  background-color: rgba(225, 226, 226, 0.803);
+}
