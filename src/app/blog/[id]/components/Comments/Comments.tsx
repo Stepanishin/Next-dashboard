@@ -122,6 +122,25 @@ const Comments = ({
     }
   };
 
+  const removeCommentById = (
+    commentArray: CommentType[],
+    commentId: string
+  ): boolean => {
+    for (let i = 0; i < commentArray.length; i++) {
+      if (commentArray[i].id === commentId) {
+        commentArray.splice(i, 1);
+        return true;
+      }
+      if (
+        commentArray[i].children &&
+        removeCommentById(commentArray[i].children, commentId)
+      ) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   const removeComment = async (commentId: string) => {
     console.log(commentId);
     try {
@@ -137,22 +156,11 @@ const Comments = ({
     } catch (err) {
       toast.error("Something went wrong!");
     }
-    // setComments((prevComments) => {
-    //   const newComments = [...prevComments];
-    //   const findAndRemoveComment = (commentArray: CommentType[]) => {
-    //     for (let comment of commentArray) {
-    //       if (comment.id === id) {
-    //         return true;
-    //       }
-    //       if (comment.children && findAndRemoveComment(comment.children)) {
-    //         return true;
-    //       }
-    //     }
-    //     return false;
-    //   };
-    //   findAndRemoveComment(newComments);
-    //   return newComments;
-    // });
+    setComments((prevComments) => {
+      const newComments = [...prevComments];
+      removeCommentById(newComments, commentId);
+      return newComments;
+    });
   };
 
   const openForm = () => {
