@@ -2,29 +2,40 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-const starDataSchema = new Schema(
-  {
-    userName: {
-      type: String,
-    },
-    userValue: {
-      type: Number,
-      default: 5,
-    },
+const CommentDataSchema = new Schema({
+  id: {
+    type: String,
+    required: true,
   },
-  { _id: false }
-);
+  body: {
+    type: String,
+    required: true,
+  },
+  username: {
+    type: String,
+    required: true,
+  },
+  parentId: {
+    type: String || null,
+    required: false,
+  },
+  createdAt: {
+    type: Date,
+    required: true,
+  },
+  avatar: {
+    type: String,
+    required: false,
+  },
+  stars: {
+    type: Number,
+    required: false,
+  },
+});
 
-const starSchema = new Schema(
-  {
-    value: {
-      type: Number,
-      default: 5,
-    },
-    data: [starDataSchema],
-  },
-  { _id: false }
-);
+const commentSchema = new Schema({
+  data: [CommentDataSchema],
+});
 
 const postSchema = new Schema(
   {
@@ -48,9 +59,14 @@ const postSchema = new Schema(
       type: String,
       required: true,
     },
-    stars: {
-      type: starSchema,
+    rate: {
+      type: Number,
       required: true,
+    },
+    comments: {
+      type: [CommentDataSchema],
+      default: [],
+      required: false,
     },
   },
   { timestamps: true }

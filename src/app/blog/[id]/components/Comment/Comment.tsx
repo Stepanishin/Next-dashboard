@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CommentForm from "../CommentForm/CommentForm";
 import { CommentType } from "../Comments/Comments";
 import styles from "./Comment.module.scss";
 import Image from "next/image";
 import StarsRaiting from "@/components/StarsRaiting/StarsRaiting";
+import { useSession } from "next-auth/react";
 
 const Comment = ({
   comment,
@@ -14,7 +15,7 @@ const Comment = ({
   blogId,
 }: {
   comment: CommentType;
-  removeComment: Function;
+  removeComment: (blogId: string) => void;
   addComment: Function;
   blogId: string;
 }) => {
@@ -22,6 +23,19 @@ const Comment = ({
 
   const startReply = () => setIsReplying(true);
   const stopReply = () => setIsReplying(false);
+
+  const [isCurrentUser, setIsCurrentUser] = useState(false);
+
+  const session = useSession();
+
+  useEffect(() => {
+    if (
+      session?.data?.user.name === comment.username &&
+      comment.username !== "Anonymous"
+    ) {
+      setIsCurrentUser(true);
+    }
+  }, [session?.data?.user.name]);
 
   return (
     <div style={{ marginLeft: comment.parentId ? 40 : 0 }}>
@@ -46,6 +60,14 @@ const Comment = ({
       <button className={styles.comment_replay__button} onClick={startReply}>
         Reply
       </button>
+      {isCurrentUser && (
+        <button
+          className={styles.comment_replay__button}
+          onClick={() => removeComment(comment.id)}
+        >
+          Delete
+        </button>
+      )}
 
       {isReplying && (
         <CommentForm

@@ -18,6 +18,7 @@ export const GET = async (request, { params }) => {
 
 export const DELETE = async (request, { params }) => {
   const { id } = params;
+  const { commentId } = await request.json(); // Получаем ID комментария, который нужно удалить
 
   try {
     await connect();
@@ -43,25 +44,24 @@ export const PUT = async (request, { params }) => {
       return new NextResponse("Post Not Found", { status: 404 });
     }
 
-    const userIndex = post.stars.data.findIndex(
-      (star) => star.userName === body.userName
-    );
+    if (body.action === "add") {
+      post.comments.push(body.commentsData);
+    }
 
-    if (userIndex !== -1) {
-      // The user has already rated, update the rating
-      post.stars.data[userIndex].userValue = body.userValue;
-    } else {
-      // The user has not rated, add a new rating
-      post.stars.data.push({
-        userName: body.userName,
-        userValue: body.userValue,
+    if (body.action === "delete") {
+      const commentIndex = post.comments.findIndex((comment) => {
+        return comment.id.toString() === body.commentId;
       });
+      if (commentIndex > -1) {
+        post.comments.splice(commentIndex, 1);
+      }
     }
 
     const updatedPost = await post.save();
 
     return new NextResponse(JSON.stringify(updatedPost), { status: 200 });
   } catch (err) {
+    console.error(err); // This will log the error to your server console
     return new NextResponse("Database Error", { status: 500 });
   }
 };

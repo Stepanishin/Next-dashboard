@@ -5,6 +5,8 @@ import Comment from "../Comment/Comment";
 import CommentForm from "../CommentForm/CommentForm";
 import styles from "./Comments.module.scss";
 import { useSession } from "next-auth/react";
+import useSWR from "swr";
+import toast, { Toaster } from "react-hot-toast";
 
 export interface CommentType {
   id: string;
@@ -17,56 +19,30 @@ export interface CommentType {
   avatar?: string;
 }
 
-const commentsData: CommentType[] = [
-  {
-    id: "1",
-    body: "First comment",
-    username: "Evgenii Google",
-    parentId: null,
-    createdAt: "2021-08-16T23:00:33.010+02:00",
-    avatar:
-      "https://lh3.googleusercontent.com/a/AAcHTtdqbhk8IgQsOmQ0yxbFzl2qdwzY-tqUCnz83-eBNZkhfQ=s96-c",
-    stars: 4,
-  },
-  {
-    id: "2",
-    body: "Second comment",
-    username: "Evgenii Google",
-    parentId: null,
-    createdAt: "2021-08-16T23:00:33.010+02:00",
-    avatar:
-      "https://lh3.googleusercontent.com/a/AAcHTtdqbhk8IgQsOmQ0yxbFzl2qdwzY-tqUCnz83-eBNZkhfQ=s96-c",
-    stars: 2,
-  },
-  {
-    id: "3",
-    body: "First comment first child",
-    username: "Evgenii Google",
-    parentId: "1",
-    createdAt: "2021-08-16T23:00:33.010+02:00",
-    avatar:
-      "https://lh3.googleusercontent.com/a/AAcHTtdqbhk8IgQsOmQ0yxbFzl2qdwzY-tqUCnz83-eBNZkhfQ=s96-c",
-  },
-  {
-    id: "4",
-    body: "Second comment second child",
-    username: "Evgenii Google",
-    parentId: "2",
-    createdAt: "2021-08-16T23:00:33.010+02:00",
-    avatar:
-      "https://lh3.googleusercontent.com/a/AAcHTtdqbhk8IgQsOmQ0yxbFzl2qdwzY-tqUCnz83-eBNZkhfQ=s96-c",
-  },
-];
-
-const Comments = ({ blogId }: { blogId: string }) => {
+const Comments = ({
+  blogId,
+  commentsData,
+}: {
+  blogId: string;
+  commentsData: CommentType[] | null;
+}) => {
   const [comments, setComments] = useState<CommentType[]>([]);
   const [isVisibleForm, setIsVisibleForm] = useState(false);
 
   const session = useSession();
 
+  type FetchArgs = [input: RequestInfo, init?: RequestInit | undefined];
+  const fetcher = (...args: FetchArgs) =>
+    fetch(...args).then((res) => res.json());
+  const { data, mutate, error, isLoading } = useSWR(
+    `/api/posts?username=${session?.data?.user.name}`,
+    fetcher
+  );
+
   useEffect(() => {
     const map: any = {},
       nodeArray: CommentType[] = [];
+    if (commentsData === null) return;
     commentsData.forEach((node) => {
       node.children = [];
       map[node.id] = node;
@@ -96,11 +72,10 @@ const Comments = ({ blogId }: { blogId: string }) => {
         return true;
       }
     }
-    // TODO: add sending comment to the server
     return false;
   };
 
-  const addComment = (
+  const addComment = async (
     body: string,
     parentId: string | null,
     stars?: number
@@ -118,6 +93,24 @@ const Comments = ({ blogId }: { blogId: string }) => {
       stars: stars,
     };
 
+    try {
+      await fetch(`http://localhost:3000/api/posts/${blogId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          action: "add",
+          id: blogId,
+          commentsData: newComment,
+        }),
+      });
+      mutate();
+      toast.success("Comment has been added");
+    } catch (err) {
+      toast.error("Something went wrong!");
+    }
+
     if (parentId) {
       setComments((prevComments) => {
         const newComments = [...prevComments];
@@ -129,8 +122,37 @@ const Comments = ({ blogId }: { blogId: string }) => {
     }
   };
 
-  const removeComment = (id: string) => {
-    // TODO: Add logic for delete comment
+  const removeComment = async (commentId: string) => {
+    console.log(commentId);
+    try {
+      await fetch(`http://localhost:3000/api/posts/${blogId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ action: "delete", commentId }),
+      });
+      mutate();
+      toast.success("Comment has been deleted");
+    } catch (err) {
+      toast.error("Something went wrong!");
+    }
+    // setComments((prevComments) => {
+    //   const newComments = [...prevComments];
+    //   const findAndRemoveComment = (commentArray: CommentType[]) => {
+    //     for (let comment of commentArray) {
+    //       if (comment.id === id) {
+    //         return true;
+    //       }
+    //       if (comment.children && findAndRemoveComment(comment.children)) {
+    //         return true;
+    //       }
+    //     }
+    //     return false;
+    //   };
+    //   findAndRemoveComment(newComments);
+    //   return newComments;
+    // });
   };
 
   const openForm = () => {
@@ -158,6 +180,7 @@ const Comments = ({ blogId }: { blogId: string }) => {
           blogId={blogId}
         />
       ))}
+      <Toaster position="top-center" reverseOrder={false} />
     </div>
   );
 };

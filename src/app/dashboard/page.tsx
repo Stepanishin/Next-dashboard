@@ -37,7 +37,17 @@ const Dashboard = () => {
     e.preventDefault();
     const title = e.target[0].value;
     const desc = e.target[1].value;
-    const img = e.target[2].value;
+    let img = e.target[2].value;
+    const isImageUrl = (url) => {
+      return (
+        url.startsWith("https://") ||
+        (url.startsWith("http://") &&
+          /\.(jpeg|jpg|gif|png|webp|svg)$/i.test(url))
+      );
+    };
+    const defaultImageUrl =
+      "https://images.pexels.com/photos/3194521/pexels-photo-3194521.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2";
+    img = isImageUrl(img) ? img : defaultImageUrl;
     const content = e.target[3].value;
 
     try {
@@ -49,15 +59,8 @@ const Dashboard = () => {
           img,
           content,
           username: session.data.user.name,
-          stars: {
-            value: 5,
-            data: [
-              {
-                userName: session.data.user.name,
-                userValue: 5,
-              },
-            ],
-          },
+          rate: 5,
+          commentsData: [],
         }),
       });
       mutate();

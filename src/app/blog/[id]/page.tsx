@@ -65,7 +65,7 @@ const BlogPost: React.FC<BlogPostProps> = async ({ params }) => {
         <p className={styles.text}>{data.content}</p>
       </div>
       <div>
-        <Comments blogId={data._id} />
+        <Comments commentsData={data.comments} blogId={data._id} />
       </div>
     </div>
   );
