@@ -41,7 +41,7 @@ const Comment = ({
     <div style={{ marginLeft: comment.parentId ? 40 : 0 }}>
       <div>
         <Image
-          src={comment.avatar}
+          src={comment.avatar ? comment.avatar : "/noAvatar.png"}
           alt=""
           width={40}
           height={40}
