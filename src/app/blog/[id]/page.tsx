@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./page.module.scss";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import Comments from "./components/Comments/Comments";
+import Comments from "../../../components/CommentsSection/Comments/Comments";
 
 interface Params {
   id: string;
