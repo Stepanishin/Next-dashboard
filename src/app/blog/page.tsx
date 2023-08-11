@@ -29,7 +29,7 @@ async function getData() {
 
     return res.json();
   } catch (error) {
-    return null;
+    return notFound();
   }
 }
 
