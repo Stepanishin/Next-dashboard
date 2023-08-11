@@ -35,7 +35,7 @@ const Comment = ({
     ) {
       setIsCurrentUser(true);
     }
-  }, [session?.data?.user.name]);
+  }, [session?.data?.user.name, comment.username]);
 
   return (
     <div style={{ marginLeft: comment.parentId ? 40 : 0 }}>
