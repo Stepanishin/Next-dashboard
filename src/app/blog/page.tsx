@@ -18,15 +18,19 @@ interface IBlog {
 }
 
 async function getData() {
-  const res = await fetch("http://127.0.0.1:3000/api/posts", {
-    cache: "no-store",
-  });
+  try {
+    const res = await fetch("http://localhost:3000/api/posts", {
+      cache: "no-store",
+    });
 
-  if (!res.ok) {
-    return notFound();
+    if (!res.ok) {
+      return notFound();
+    }
+
+    return res.json();
+  } catch (error) {
+    return [];
   }
-
-  return res.json();
 }
 
 const Blog = async () => {
