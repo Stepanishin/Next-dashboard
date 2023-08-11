@@ -29,7 +29,7 @@ async function getData() {
 
     return res.json();
   } catch (error) {
-    return [];
+    return null;
   }
 }
 
@@ -37,25 +37,26 @@ const Blog = async () => {
   const data = await getData();
   return (
     <div className={styles.mainContainer}>
-      {data.map((item: IBlog) => (
-        <div className={styles.container} key={item.id}>
-          <Link href={`/blog/${item._id}`} className={styles.imageContainer}>
-            <Image
-              src={item.img}
-              alt=""
-              width={400}
-              height={250}
-              className={styles.image}
-            />
-          </Link>
-          <div className={styles.content}>
-            <Link href={`/blog/${item._id}`} className={styles.title}>
-              {item.title}
+      {data &&
+        data.map((item: IBlog) => (
+          <div className={styles.container} key={item.id}>
+            <Link href={`/blog/${item._id}`} className={styles.imageContainer}>
+              <Image
+                src={item.img}
+                alt=""
+                width={400}
+                height={250}
+                className={styles.image}
+              />
             </Link>
-            <p className={styles.desc}>{item.desc}</p>
+            <div className={styles.content}>
+              <Link href={`/blog/${item._id}`} className={styles.title}>
+                {item.title}
+              </Link>
+              <p className={styles.desc}>{item.desc}</p>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
     </div>
   );
 };
