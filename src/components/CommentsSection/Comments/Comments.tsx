@@ -53,7 +53,7 @@ const Comments = ({
       }
     });
     setComments(nodeArray);
-  }, []);
+  }, [commentsData]);
 
   const findAndAddComment = (
     commentArray: CommentType[],
@@ -94,7 +94,7 @@ const Comments = ({
     };
 
     try {
-      await fetch(`http://localhost:3000/api/posts/${blogId}`, {
+      await fetch(`/api/posts/${blogId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -144,7 +144,7 @@ const Comments = ({
   const removeComment = async (commentId: string) => {
     console.log(commentId);
     try {
-      await fetch(`http://localhost:3000/api/posts/${blogId}`, {
+      await fetch(`/api/posts/${blogId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
