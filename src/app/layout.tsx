@@ -5,6 +5,19 @@ import { Inter } from "next/font/google";
 import Footer from "@/components/footer/Footer";
 import { ThemeProvider } from "@/context/ThemeContext";
 import AuthProvider from "@/components/AuthProvider/AuthProvider";
+import { storyblokInit, apiPlugin } from "@storyblok/react/rsc";
+import StoryblokProvider from "@/components/StoryblokProvider/StoryblokProvider";
+import CategoryItem from "@/components/Portfolio/CategoryItem/CategoryItem";
+
+const components = {
+  CategoryItem: CategoryItem,
+};
+
+storyblokInit({
+  accessToken: process.env.storyblokApiToken,
+  use: [apiPlugin],
+  components,
+});
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,18 +32,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <ThemeProvider>
-          <AuthProvider>
-            <div className="container">
-              <Navbar />
-              {children}
-              <Footer />
-            </div>
-          </AuthProvider>
-        </ThemeProvider>
-      </body>
-    </html>
+    <StoryblokProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <ThemeProvider>
+            <AuthProvider>
+              <div className="container">
+                <Navbar />
+                {children}
+                <Footer />
+              </div>
+            </AuthProvider>
+          </ThemeProvider>
+        </body>
+      </html>
+    </StoryblokProvider>
   );
 }
