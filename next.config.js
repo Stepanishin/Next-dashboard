@@ -9,6 +9,9 @@ const nextConfig = {
       "avatars.githubusercontent.com",
     ],
   },
+  env: {
+    storyblokApiToken: process.env.STORYBLOK_API_TOKEN,
+  },
 };
 
 module.exports = nextConfig;
